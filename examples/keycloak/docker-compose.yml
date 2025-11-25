@@ -61,7 +61,7 @@ services:
         EOF
 
         cat > /tmp/pg_ident.conf <<'EOF'
-        okta_map  /^([^@]+)@.*$/  praveeng
+        okta_map   /^(.+)@onehouse\.ai              \1
         EOF
 
         cat > /docker-entrypoint-initdb.d/create-testuser.sh <<'EOF'
