@@ -26,7 +26,7 @@ services:
       start_period: 30s
 
   postgres:
-    image: docker.io/postgres:18
+    image: onehouse/lake-cache-postgres:local
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
@@ -43,10 +43,6 @@ services:
         apt-get update -qq
         apt-get install -y -qq ca-certificates curl libcurl4 wget
         update-ca-certificates
-
-        wget -q https://github.com/Percona-Lab/pg_oidc_validator/releases/download/latest/pg-oidc-validator-pgdg18.deb
-        dpkg -i pg-oidc-validator-pgdg18.deb
-        rm pg-oidc-validator-pgdg18.deb
 
         mkdir -p /etc/postgresql/conf.d /docker-entrypoint-initdb.d
 
