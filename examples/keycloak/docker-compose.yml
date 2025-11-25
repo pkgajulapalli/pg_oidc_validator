@@ -49,10 +49,11 @@ services:
         cat > /etc/postgresql/conf.d/oauth.conf <<'EOF'
         listen_addresses = '*'
         oauth_validator_libraries = 'pg_oidc_validator'
-        pg_oidc_validator.authn_field = 'email'
+        pg_oidc_validator.authn_field = 'sub'
         EOF
 
         cat > /tmp/pg_hba.conf <<'EOF'
+        host all all 0.0.0.0/0 oauth scope="openid profile email",issuer=https://onehouse.okta.com,map=okta_map
         host all all 0.0.0.0/0 oauth scope="email pgscope",issuer=https://keycloak:8443/realms/pgrealm,map=emap
         local all all trust
         host all all 127.0.0.1/32 trust
@@ -60,14 +61,14 @@ services:
         EOF
 
         cat > /tmp/pg_ident.conf <<'EOF'
-        emap  testuser@example.com  testuser
+        okta_map  /^([^@]+)@.*$/  praveeng
         EOF
 
         cat > /docker-entrypoint-initdb.d/create-testuser.sh <<'EOF'
         #!/bin/bash
         set -e
         psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
-          CREATE ROLE testuser LOGIN SUPERUSER;
+          CREATE ROLE praveeng LOGIN SUPERUSER;
         EOSQL
         EOF
 
@@ -107,11 +108,11 @@ services:
         echo 'When prompted, follow the device flow:'
         echo '  1. Visit the URL shown in your browser'
         echo '  2. Enter the device code'
-        echo '  3. Login with: testuser / asdfasdf'
+        echo '  3. Login with: Okta credentials'
         echo ''
         echo '========================================'
         echo ''
 
-        exec psql 'host=postgres dbname=postgres user=testuser oauth_issuer=https://keycloak:8443/realms/pgrealm oauth_client_id=pgtest'
+        exec psql 'host=postgres dbname=postgres user=praveeng oauth_issuer=https://onehouse.okta.com oauth_client_id=0oaxsdxw4wCMlZopL697 oauth_scope=openid\ profile\ email'
     stdin_open: true
     tty: true
