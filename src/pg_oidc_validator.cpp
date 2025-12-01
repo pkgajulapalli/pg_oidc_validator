@@ -76,7 +76,7 @@ bool validate_token(const ValidatorModuleState* state, const char* token, const 
   elog(LOG, "Found jwks_info: %s", jwks_info.serialize().c_str());
   const auto decoded_token = jwt::decode(token);
   elog(LOG, "Found decoded_token: %s", token);
-  SetCurrentStatementGUC("pg_oidc_validator.oidc_token", token, GUC_ACTION_ASSIGN);
+  SetCurrentStatementGUC("pg_oidc_validator.oidc_token", token, GUC_ACTION_SET);
   const std::string jwt_kid = decoded_token.get_header_claim("kid").as_string();
   const auto verifier = configure_verifier_with_jwks(issuer, jwks_info, jwt_kid);
   verifier.verify(decoded_token);
