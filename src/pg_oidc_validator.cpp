@@ -27,10 +27,14 @@ const OAuthValidatorCallbacks* _PG_oauth_validator_module_init(void) { return &v
 }
 
 static char* authn_field = nullptr;
+static char* oidc_token = nullptr;
 
 extern "C" void _PG_init() {
   DefineCustomStringVariable("pg_oidc_validator.authn_field",
                              gettext_noop("OAuth field used for matching PostgreSQL users"), nullptr, &authn_field,
+                             "sub", PGC_SIGHUP, 0, nullptr, nullptr, nullptr);
+  DefineCustomStringVariable("pg_oidc_validator.oidc_token",
+                             gettext_noop("Decoded token obtained from OAuth login flow"), nullptr, &oidc_token,
                              "sub", PGC_SIGHUP, 0, nullptr, nullptr, nullptr);
 }
 
@@ -69,8 +73,10 @@ bool validate_token(const ValidatorModuleState* state, const char* token, const 
   }
 
   const auto jwks_info = http.get_json(jwks_uri);
+  elog(LOG, "Found jwks_info: %s", jwks_info);
   const auto decoded_token = jwt::decode(token);
   elog(LOG, "Found decoded_token: %s", token);
+  SetCurrentStatementGUC("pg_oidc_validator.oidc_token", token, GUC_ACTION_ASSIGN);
   const std::string jwt_kid = decoded_token.get_header_claim("kid").as_string();
   const auto verifier = configure_verifier_with_jwks(issuer, jwks_info, jwt_kid);
   verifier.verify(decoded_token);
