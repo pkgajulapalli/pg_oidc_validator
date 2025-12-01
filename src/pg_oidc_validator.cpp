@@ -35,7 +35,7 @@ extern "C" void _PG_init() {
                              "sub", PGC_SIGHUP, 0, nullptr, nullptr, nullptr);
   DefineCustomStringVariable("pg_oidc_validator.oidc_token",
                              gettext_noop("Decoded token obtained from OAuth login flow"), nullptr, &oidc_token,
-                             "sub", PGC_SIGHUP, 0, nullptr, nullptr, nullptr);
+                             "sub", PGC_USERSET, 0, nullptr, nullptr, nullptr);
 }
 
 bool validate_token(const ValidatorModuleState* state, const char* token, const char* role,
