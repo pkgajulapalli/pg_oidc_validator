@@ -35,7 +35,7 @@ extern "C" void _PG_init() {
                              "sub", PGC_SIGHUP, 0, nullptr, nullptr, nullptr);
   DefineCustomStringVariable("pg_oidc_validator.oidc_token",
                              gettext_noop("Decoded token obtained from OAuth login flow"), nullptr, &oidc_token,
-                             "sub", PGC_USERSET, 0, nullptr, nullptr, nullptr);
+                             "", PGC_USERSET, 0, nullptr, nullptr, nullptr);
 }
 
 std::string serialize_map_to_string(const std::map<std::basic_string<char>, picojson::value>& data_map) {
