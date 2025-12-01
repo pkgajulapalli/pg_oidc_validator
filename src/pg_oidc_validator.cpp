@@ -66,6 +66,7 @@ bool validate_token(const ValidatorModuleState* state, const char* token, const 
   }
 
   const auto jwks_uri = issuer_object.at("jwks_uri").to_str();
+  elog(LOG, "Found issuer_object: %s", issuer_object.serialize().c_str());
 
   if (jwks_uri.empty()) {
     elog(WARNING, "Could not parse JWKS URI from issuer configuration");
