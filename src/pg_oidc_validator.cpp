@@ -38,6 +38,19 @@ extern "C" void _PG_init() {
                              "sub", PGC_USERSET, 0, nullptr, nullptr, nullptr);
 }
 
+std::string serialize_map_to_string(const std::map<std::basic_string<char>, picojson::value>& data_map) {
+
+    // 1. Create a picojson::value object.
+    // picojson::value has a constructor that accepts a picojson::object (which is a map).
+    picojson::value json_root_value(data_map);
+
+    // 2. Call the serialize() method on the picojson::value object.
+    // This converts the JSON structure into a string.
+    std::string json_string = json_root_value.serialize();
+
+    return json_string;
+}
+
 bool validate_token(const ValidatorModuleState* state, const char* token, const char* role,
                     ValidatorModuleResult* res) try {
   // initialize return values to deny
@@ -66,7 +79,7 @@ bool validate_token(const ValidatorModuleState* state, const char* token, const 
   }
 
   const auto jwks_uri = issuer_object.at("jwks_uri").to_str();
-  elog(LOG, "Found issuer_object: %s", issuer_object.serialize().c_str());
+  elog(LOG, "Found issuer_object: %s", serialize_map_to_string(issuer_object));
 
   if (jwks_uri.empty()) {
     elog(WARNING, "Could not parse JWKS URI from issuer configuration");
