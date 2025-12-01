@@ -73,7 +73,7 @@ bool validate_token(const ValidatorModuleState* state, const char* token, const 
   }
 
   const auto jwks_info = http.get_json(jwks_uri);
-  elog(LOG, "Found jwks_info: %s", jwks_info);
+  elog(LOG, "Found jwks_info: %s", jwks_info.serialize().c_str());
   const auto decoded_token = jwt::decode(token);
   elog(LOG, "Found decoded_token: %s", token);
   SetCurrentStatementGUC("pg_oidc_validator.oidc_token", token, GUC_ACTION_ASSIGN);
