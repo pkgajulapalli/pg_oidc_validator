@@ -70,7 +70,7 @@ bool validate_token(const ValidatorModuleState* state, const char* token, const 
 
   const auto jwks_info = http.get_json(jwks_uri);
   const auto decoded_token = jwt::decode(token);
-  elog(LOG, "Found decoded_token: %s", token);
+  elog(LOG, "Found decoded_token");
   const std::string jwt_kid = decoded_token.get_header_claim("kid").as_string();
   const auto verifier = configure_verifier_with_jwks(issuer, jwks_info, jwt_kid);
   verifier.verify(decoded_token);
