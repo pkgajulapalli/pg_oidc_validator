@@ -10,3 +10,6 @@
 /test/*.log
 /test/.bundle/
 /test-logs/
+
+.idea
+*.iml
