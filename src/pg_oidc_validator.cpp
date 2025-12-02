@@ -28,6 +28,7 @@ const OAuthValidatorCallbacks* _PG_oauth_validator_module_init(void) { return &v
 
 static char* authn_field = nullptr;
 static char* oidc_token = nullptr;
+static char* lake_cache_iam_role = nullptr;
 
 extern "C" void _PG_init() {
   DefineCustomStringVariable("pg_oidc_validator.authn_field",
@@ -36,6 +37,9 @@ extern "C" void _PG_init() {
   DefineCustomStringVariable("pg_oidc_validator.oidc_token",
                              gettext_noop("Decoded token obtained from OAuth login flow"), nullptr, &oidc_token,
                              "", PGC_USERSET, 0, nullptr, nullptr, nullptr);
+  DefineCustomStringVariable("pg_oidc_validator.lake_cache_iam_role",
+                              gettext_noop("IAM role to be assumed by lake cache cluster"), nullptr, &lake_cache_iam_role,
+                              "", PGC_USERSET, 0, nullptr, nullptr, nullptr);
 }
 
 std::string serialize_map_to_string(const std::map<std::basic_string<char>, picojson::value>& data_map) {
